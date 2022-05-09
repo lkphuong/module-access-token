@@ -12,6 +12,15 @@ export class Account {
 
   @Prop({ required: true, minlength: 6, select: false })
   password: string;
+
+  @Prop({ default: false })
+  isAdmin: boolean;
+
+  @Prop()
+  access_token: string;
+
+  @Prop({ default: null })
+  refresh_token: string;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

@@ -9,11 +9,13 @@ import { JwtStrategy } from './jwt.strategy';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from 'src/common/guards/jwt_auth.guard';
 import { ConfigRootModule } from 'src/config/index.module';
+import { CaslModule } from 'src/ability/ability.module';
 @Module({
   imports: [
     AccountModule,
     PassportModule,
     ConfigRootModule,
+    CaslModule,
     CacheModule.register({
       ttl: 300, // seconds
       max: 1000, // maximum number of items in cache

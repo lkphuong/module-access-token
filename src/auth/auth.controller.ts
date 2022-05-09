@@ -15,6 +15,10 @@ import { LocalAuthGuard } from 'src/common/guards/local_auth.guard';
 import { Public } from 'src/common/decorators/auth/public.decoration';
 import { ResponseHelper } from 'src/common/helpers/response.helper';
 import { Cache } from 'cache-manager';
+import { PoliciesGuard } from 'src/common/guards/ability.guard';
+import { CheckPolicies } from 'src/common/decorators/ability/ability.decoration';
+import { Action, AppAbility } from 'src/ability/casl-ability.factory';
+import { Account } from 'src/modules/account/schema/account.schema';
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -32,5 +36,12 @@ export class AuthController {
   @Get('auth/profile')
   async getProfile(@Request() req: any) {
     return req.user;
+  }
+
+  @Get('cals')
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, Account))
+  findAll() {
+    return 'cals success';
   }
 }

@@ -15,8 +15,6 @@ export function TokenMiddleware(
         if (err.message == 'jwt expired') {
           throw new UnauthorizedException(1003, 'Token Expired');
         } else throw new UnauthorizedException(1002, 'Invalid Token');
-      } else {
-        console.log(result);
       }
     });
   }
