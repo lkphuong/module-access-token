@@ -10,7 +10,7 @@ export class Account {
   @Prop({ unique: true, required: true })
   username: string;
 
-  @Prop({ required: true, minlength: 6 })
+  @Prop({ required: true, minlength: 6, select: false })
   password: string;
 }
 

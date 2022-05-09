@@ -1,12 +1,16 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UnauthorizedException } from 'src/common/exceptions/unauthorized.exception';
 import { LoginDto } from './dto/login.dto';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private authService: AuthService,
+  ) {
     super();
   }
 
@@ -17,12 +21,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     };
     const account = await this.authService.validateUser(loginDto);
     if (!account) {
-      throw new UnauthorizedException(
-        1001,
-        'Cần phải đăng nhập trước khi gọi request',
-      );
+      throw new UnauthorizedException(1001, 'Invalid Token');
     }
-
+    await this.cacheManager.set(`${account._id}`, account);
     return account;
   }
 }

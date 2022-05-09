@@ -3,7 +3,6 @@ import { Account, AccountDocument } from '../schema/account.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { compareSync } from 'bcrypt';
-import * as bcrypt from 'bcrypt';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { CreateAccountDto } from '../dto';
 import { NotFoundException } from 'src/common/exceptions/not_found.exception';
@@ -28,22 +27,25 @@ export class AccountRepository {
     const account = await this.accountModel
       .findOne({ username: loginDto.username })
       .select('+password');
-    if (!account) throw new NotFoundException(1001, 'Người dùng không tồn tại');
+    if (!account) throw new NotFoundException(3006, 'Người dùng không tồn tại');
     const isMatch = compareSync(loginDto.password, account.password);
 
     if (!isMatch)
       throw new BadRequestException(
-        1001,
+        3006,
         'Username hoặc mật khẩu không chính xác',
       );
-    return account;
+    return {
+      _id: account._id,
+      username: account.username,
+    };
   }
 
   async createAccount(createAccountDto: CreateAccountDto) {
     const account = await this.accountModel.findOne({
       username: createAccountDto.username,
     });
-    if (account) throw new NotFoundException(1001, 'Người dùng đã tồn tại');
+    if (account) throw new NotFoundException(3003, 'Người dùng đã tồn tại');
     return await this.accountModel.create(createAccountDto);
   }
 }

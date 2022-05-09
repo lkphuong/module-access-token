@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable, Request } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from 'src/common/constants/settings';
@@ -23,13 +23,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err: any, user: any) {
     if (err || !user) {
-      throw (
-        err ||
-        new UnauthorizedException(
-          1001,
-          'Cần phải đăng nhập trước khi gọi request',
-        )
-      );
+      throw err || new UnauthorizedException(1001, 'No Token');
     }
 
     return user;

@@ -6,13 +6,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
+  CACHE_MANAGER,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt_auth.guard';
 import { LocalAuthGuard } from 'src/common/guards/local_auth.guard';
 import { Public } from 'src/common/decorators/auth/public.decoration';
 import { ResponseHelper } from 'src/common/helpers/response.helper';
-
+import { Cache } from 'cache-manager';
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -28,7 +30,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('auth/profile')
-  getProfile(@Request() req: any) {
+  async getProfile(@Request() req: any) {
     return req.user;
   }
 }
