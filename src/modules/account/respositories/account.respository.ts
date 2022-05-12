@@ -20,7 +20,7 @@ export class AccountRepository {
   }
 
   async findByID(id: string): Promise<Account> {
-    return await this.accountModel.findById(id);
+    return await this.accountModel.findById(id).select('-access_token');
   }
 
   async login(loginDto: LoginDto): Promise<any> {
@@ -38,6 +38,7 @@ export class AccountRepository {
     return {
       _id: account._id,
       username: account.username,
+      isAdmin: account.isAdmin,
     };
   }
 
@@ -47,5 +48,19 @@ export class AccountRepository {
     });
     if (account) throw new NotFoundException(3003, 'Người dùng đã tồn tại');
     return await this.accountModel.create(createAccountDto);
+  }
+
+  updateAccessToken(id: string, accessToken: string) {
+    const result = this.accountModel.findByIdAndUpdate(id, {
+      access_token: accessToken,
+    });
+    return result;
+  }
+
+  async checkAccessToken(token: string) {
+    const account = await this.accountModel.findOne({ access_token: token });
+    if (!account) {
+      console.log('Tài khoản đã được đăng nhập ở thiết bị khác');
+    }
   }
 }

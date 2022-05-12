@@ -17,4 +17,13 @@ export class AccountService {
   async create(createAccountDto: CreateAccountDto) {
     return await this.accountRepository.createAccount(createAccountDto);
   }
+
+  // update and save access token
+  async updateAccessToken(id: string, accessToken: string) {
+    return this.accountRepository.updateAccessToken(id, accessToken);
+  }
+
+  async checkDevice(token: string) {
+    return this.accountRepository.checkAccessToken(token);
+  }
 }
